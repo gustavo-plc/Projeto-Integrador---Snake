@@ -103,7 +103,21 @@ void mapa(void) {
 }
 void moverCobra() {}
 
-void adicionarSegmento() {}
+void adicionarSegmento(Cobra *cobra) {
+
+  if(!cobra)
+    return;
+  No_Corpo *novo = malloc(sizeof(No_Corpo)); //criação de um nó avulso
+  novo->prox = NULL; //como o novo nó criado é o último, ele apontará para NULL.
+  if(!novo)  //se nó criado com sucesso, não entra no if
+    return;
+  No_Corpo *aux = cobra->cabeca;
+  while(aux->prox != NULL)
+      aux = aux->prox;
+  aux->prox = novo; //o último nó apontará para o novo nó criado (que agora é o último)
+  cobra->cauda = novo; //atualização da variável cauda para receber o endereço do último nó 
+  
+}
 
 int verificarColisao(Cobra *cobra, int altura, int largura) {
   if(cobra->cabeca->corpo.x == 0 || cobra->cabeca->corpo.x == largura - 1 || cobra->cabeca->corpo.y == 0 || cobra->cabeca->corpo.y == altura -1) {
