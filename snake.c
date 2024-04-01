@@ -148,7 +148,7 @@ void verificarComerAlimento(
                                // gerada novamente e é adicionado um nó na cobra
   {
     atualizarPosicaoAlimento();
-    adicionarSegmento();
+    adicionarSegmento(Cobra * cobra);
   }
 }
 
