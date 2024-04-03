@@ -18,6 +18,8 @@
 
 // Definição da estrutura para o jogador
 
+typedef struct jogador Jogador;
+
 struct jogador {
   char nome[50]; // nome do jogador
   int pontuacao; // pontuação do jogador
@@ -198,18 +200,19 @@ boolean verificarColisao(Cobra *cobra, int altura, int largura) {
 
 void atualizarPosicaoAlimento() {
   Ponto comida = {
-      .x = rand(),
-      .y = rand()}; // ainda deve ser definido o range da função aleatória, para
+      comida.x = rand(),
+      comida.y = rand()
+      }; // ainda deve ser definido o range da função aleatória, para
                     // ser coerente com as dimensões do mapa
 }
 
-void verificarComerAlimento(Cobra cobra, Ponto comida, Jogador jogador) // essa função terá que ser executada continuamente, dentro de um while na main talvez.
+void verificarComerAlimento(Cobra *cobra, Ponto comida, Jogador *jogador) // essa função terá que ser executada continuamente, dentro de um while na main talvez.
 {
-  if ((comida.x == cobra.cabeca->corpo.x) && (comida.y == cobra.cabeca->corpo.y)) // se a cabeça atingir a comida, a comida é gerada novamente e é adicionado um nó na cobra
+  if ((comida.x == cobra->cabeca->corpo.x) && (comida.y == cobra->cabeca->corpo.y)) // se a cabeça atingir a comida, a comida é gerada novamente e é adicionado um nó na cobra
   {
     atualizarPosicaoAlimento();
     adicionarSegmento(cobra);
-    jogador.pontuacao = jogador.pontuacao + 5;
+    jogador->pontuacao = jogador->pontuacao + 5;
   }
 }
 
@@ -227,7 +230,7 @@ void iniciarJogo() {
     numero_aleatorio2 = min + rand() % (max - min + 1);
 
     // Inicializar a cobra
-    Cobra cobra = inicializarCobra(numero_aleatorio1, numero_aleatorio2, DOWN);
+    Cobra *cobra = inicializarCobra(numero_aleatorio1, numero_aleatorio2, DOWN);
 
     // Definir a posição inicial da comida
     atualizarPosicaoAlimento();
@@ -255,6 +258,17 @@ void iniciarJogo() {
 
 void encerrarJogo() {}
 
+Jogador *criarJogador(const char *nome) {
+  Jogador *jogador = (Jogador *)malloc(sizeof(Jogador));
+  if (jogador == NULL) {
+      printf("\nErro ao criar jogador.\n");
+      return;
+  }
+  strcpy(jogador->nome, nome);
+  jogador->pontuacao = 0;
+  return jogador;
+}
+
 void renderizarTabuleiro() {}
 
 void lidarComEntradaUsuario() {}
@@ -262,6 +276,10 @@ void lidarComEntradaUsuario() {}
 void atualizarTela() {}
 
 void exibirPontuacao() {}
+
+void liberarJogador(Jogador *jogador) {
+    free(jogador);
+}
 
 boolean verificarFimDoJogo() { // Essa função vai precisar sendo verificada sempre com um while na main
   

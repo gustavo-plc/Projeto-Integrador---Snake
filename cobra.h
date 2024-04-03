@@ -73,7 +73,7 @@ boolean verificarColisao(Cobra *cobra, int largura, int altura);
 void atualizarPosicaoAlimento();
 
 // Cabeçalho da função para verificar se a cobra comeu o alimento
-void verificarComerAlimento(Cobra cobra, Ponto comida);
+void verificarComerAlimento(Cobra *cobra, Ponto comida, Jogador *jogador);
 
 // Cabeçalho da função para iniciar o jogo
 void iniciarJogo();
@@ -97,6 +97,10 @@ boolean verificarFimDoJogo();
 
 // Cabeçalho da função para inicializar o tabuleiro
 void inicializarTabuleiro();
+
+Jogador *criarJogador(const char *nome);
+
+void liberarJogador(Jogador *jogador);
 
 // Cabeçalho da função para limpar a tela
 void limparTela();
