@@ -1,6 +1,7 @@
-#include "snake.h"
+#include "cobra.h"
 #include <stdio.h>
 #include <stdlib.h>
+
 
 int main() {
 
@@ -68,3 +69,14 @@ int main() {
   if (escolha == 5)
     printf("\n\n Aguardamos você em breve para uma nova partida!");
 }
+
+// int main() {
+//   // setlocale(LC_ALL, "en_US.UTF-8");
+//   // setlocale(LC_ALL, "Portuguese_Brasil");
+
+//   limpar_tela();
+//   mover_cursor_xy(5, 5);
+//   printf("Texto na posição 5,5");
+
+//   return 0;
+// }

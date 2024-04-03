@@ -9,7 +9,10 @@ typedef struct no_corpo No_Corpo;
 typedef struct cobra Cobra;
 typedef struct jogo Jogo;
 
+
 //descrição do cabeçalho das funções
+
+
 
 //* Função no menu 
 
@@ -64,7 +67,7 @@ void moverCobra();
 void adicionarSegmento();
 
 // Cabeçalho da função para verificar colisão da cobra
-int verificarColisao(Cobra *cobra, int largura, int altura);
+boolean verificarColisao(Cobra *cobra, int largura, int altura);
 
 // Cabeçalho da função para atualizar a posição do alimento
 void atualizarPosicaoAlimento();
@@ -90,7 +93,7 @@ void atualizarTela();
 void exibirPontuacao();
 
 // Cabeçalho da função para verificar se o jogo acabou
-int verificarFimDoJogo();
+boolean verificarFimDoJogo();
 
 // Cabeçalho da função para inicializar o tabuleiro
 void inicializarTabuleiro();
@@ -102,7 +105,7 @@ void limparTela();
 void controlarVelocidadeJogo();
 
 // Cabeçalho da função para liberar a memória alocada
-void liberarMemoria();
+void liberarMemoria(Cobra *cobra);
 
 // Cabeçalho da função para pausar o jogo
 void pausarJogo();
