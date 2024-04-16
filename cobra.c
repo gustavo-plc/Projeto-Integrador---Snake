@@ -182,15 +182,15 @@ void adicionarSegmento(Cobra *cobra) {
                        // do último nó
 }
 
-boolean verificarColisao(Cobra **cobra, int *altura, int *largura) {
-  if ((int)(*cobra)->cabeca->corpo.x == 0 || (int)(*cobra)->cabeca->corpo.x == largura - 1 || 
-      (int)(*cobra)->cabeca->corpo.y == 0 || (int)(*cobra)->cabeca->corpo.y == altura - 1) {
+int verificarColisao(Cobra *cobra, int *altura, int *largura) {
+  if (cobra->cabeca->corpo.x == 0 || cobra->cabeca->corpo.x == largura - 1 || 
+      cobra->cabeca->corpo.y == 0 || cobra->cabeca->corpo.y == altura - 1) {
     return true; // colisão com as paredes
   }
-  No_Corpo *segmento = (*cobra)->cabeca->prox;
+  No_Corpo *segmento = cobra->cabeca->prox;
   while (segmento != NULL) {
-    if (segmento->corpo.x == (*cobra)->cabeca->corpo.x &&
-        segmento->corpo.y == (*cobra)->cabeca->corpo.y) {
+    if (segmento->corpo.x == cobra->cabeca->corpo.x &&
+        segmento->corpo.y == cobra->cabeca->corpo.y) {
       return true; // colisão com o proprio corpo da cobrinha
     }
     segmento = segmento->prox;
@@ -248,10 +248,10 @@ Cobra *iniciarJogo() {
 
 
     // Loop principal do jogo
-    while (!verificarFimDoJogo()) {
+    while (!verificarFimDoJogo) {
         // Lógica da cobra e do jogo...
         moverCobra(cobra);
-        verificarColisao(&cobra, &altura, &largura);
+        verificarColisao(cobra, &altura, &largura);
         verificarComerAlimento(cobra, comida, jogador);
 
         // Aguarda o intervalo de tempo antes do próximo movimento da cobra
@@ -275,7 +275,7 @@ Jogador *criarJogador(const char *nome) {
   Jogador *jogador = (Jogador *)malloc(sizeof(Jogador));
   if (jogador == NULL) {
       printf("\nErro ao criar jogador.\n");
-      return;
+      return NULL;
   }
   strcpy(jogador->nome, nome);
   jogador->pontuacao = 0;
@@ -345,7 +345,7 @@ void liberarJogador(Jogador *jogador) {
     free(jogador);
 }
 
-boolean verificarFimDoJogo() { // Essa função vai precisar sendo verificada sempre com um while na main
+int verificarFimDoJogo() { // Essa função vai precisar sendo verificada sempre com um while na main
   
   if (verificarColisao) 
   {

@@ -66,13 +66,13 @@ void moverCobra();
 void adicionarSegmento();
 
 // Cabeçalho da função para verificar colisão da cobra
-void verificarColisao(Cobra *cobra, int largura, int altura);
+int verificarColisao(Cobra *cobra, int *altura, int *largura);
 
 // Cabeçalho da função para atualizar a posição do alimento
 Ponto *atualizarPosicaoAlimento();
 
 // Cabeçalho da função para verificar se a cobra comeu o alimento
-void verificarComerAlimento(Cobra *cobra, Ponto comida, Jogador *jogador);
+void verificarComerAlimento(Cobra *cobra, Ponto *comida, Jogador *jogador);
 
 // Cabeçalho da função para iniciar o jogo
 Cobra *iniciarJogo();
@@ -92,7 +92,7 @@ void atualizarTela();
 void exibirPontuacao();
 
 // Cabeçalho da função para verificar se o jogo acabou
-void verificarFimDoJogo();
+int verificarFimDoJogo();
 
 // Cabeçalho da função para inicializar o tabuleiro
 void inicializarTabuleiro();
