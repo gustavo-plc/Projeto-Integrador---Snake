@@ -25,8 +25,16 @@ int main() {
     switch (escolha) {
 
     case 1: {
+      Cobra *c1;
+      Jogador *jogador;
+      int largura;
+      int altura;
+      Ponto *comida;
+
       system("clear");
       printf("\n\n Opção escolhida: 1 ");
+      iniciarJogo();
+
       break;
     }
 

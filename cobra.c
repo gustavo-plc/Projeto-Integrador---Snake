@@ -182,15 +182,15 @@ void adicionarSegmento(Cobra *cobra) {
                        // do último nó
 }
 
-boolean verificarColisao(Cobra *cobra, int altura, int largura) {
-  if (cobra->cabeca->corpo.x == 0 || cobra->cabeca->corpo.x == largura - 1 ||
-      cobra->cabeca->corpo.y == 0 || cobra->cabeca->corpo.y == altura - 1) {
+boolean verificarColisao(Cobra **cobra, int *altura, int *largura) {
+  if ((int)(*cobra)->cabeca->corpo.x == 0 || (int)(*cobra)->cabeca->corpo.x == largura - 1 || 
+      (int)(*cobra)->cabeca->corpo.y == 0 || (int)(*cobra)->cabeca->corpo.y == altura - 1) {
     return true; // colisão com as paredes
   }
-  No_Corpo *segmento = cobra->cabeca->prox;
+  No_Corpo *segmento = (*cobra)->cabeca->prox;
   while (segmento != NULL) {
-    if (segmento->corpo.x == cobra->cabeca->corpo.x &&
-        segmento->corpo.y == cobra->cabeca->corpo.y) {
+    if (segmento->corpo.x == (*cobra)->cabeca->corpo.x &&
+        segmento->corpo.y == (*cobra)->cabeca->corpo.y) {
       return true; // colisão com o proprio corpo da cobrinha
     }
     segmento = segmento->prox;
@@ -198,25 +198,29 @@ boolean verificarColisao(Cobra *cobra, int altura, int largura) {
   return false; // sem colisão
 }
 
-void atualizarPosicaoAlimento() {
-  Ponto comida = {
-      comida.x = rand(),
-      comida.y = rand()
-      }; // ainda deve ser definido o range da função aleatória, para
-                    // ser coerente com as dimensões do mapa
+Ponto *atualizarPosicaoAlimento() {
+    Ponto *comida = (Ponto *)malloc(sizeof(Ponto));
+    if (!comida) {
+        printf("Erro ao alocar a comida.\n");
+        return NULL;
+    }
+    comida->x = rand() % (largura - 2) + 1;  // Limita a comida dentro do mapa, excluindo as bordas
+    comida->y = rand() % (altura - 2) + 1;   // Limita a comida dentro do mapa, excluindo as bordas
+    return comida;
 }
 
-void verificarComerAlimento(Cobra *cobra, Ponto comida, Jogador *jogador) // essa função terá que ser executada continuamente, dentro de um while na main talvez.
+
+void verificarComerAlimento(Cobra *cobra, Ponto *comida, Jogador *jogador) // essa função terá que ser executada continuamente, dentro de um while na main talvez.
 {
-  if ((comida.x == cobra->cabeca->corpo.x) && (comida.y == cobra->cabeca->corpo.y)) // se a cabeça atingir a comida, a comida é gerada novamente e é adicionado um nó na cobra
+  if ((comida->x == cobra->cabeca->corpo.x) && (comida->y == cobra->cabeca->corpo.y)) // se a cabeça atingir a comida, a comida é gerada novamente e é adicionado um nó na cobra
   {
-    atualizarPosicaoAlimento();
+    atualizarPosicaoAlimento(comida);
     adicionarSegmento(cobra);
     jogador->pontuacao = jogador->pontuacao + 5;
   }
 }
 
-void iniciarJogo() {
+Cobra *iniciarJogo() {
     // Inicializar a cobra com uma posição inicial e direção inicial
     int min = 2; // Limites do mapa
     int max = 30; // Limites do mapa
@@ -233,28 +237,37 @@ void iniciarJogo() {
     Cobra *cobra = inicializarCobra(numero_aleatorio1, numero_aleatorio2, DOWN);
 
     // Definir a posição inicial da comida
-    atualizarPosicaoAlimento();
+
+    Ponto *comida = atualizarPosicaoAlimento();
 
     // Configurar a velocidade inicial da cobra
     int velocidade = INTERVALO_DE_TEMPO;
 
-    // Inicializar a pontuação do jogador
-    Jogador jogador;
-    jogador.pontuacao = 0;
+    // Inicializar o jogador e sua pontuação
+    Jogador *jogador = criarJogador("Jogador");
+
 
     // Loop principal do jogo
     while (!verificarFimDoJogo()) {
         // Lógica da cobra e do jogo...
+        moverCobra(cobra);
+        verificarColisao(&cobra, &altura, &largura);
+        verificarComerAlimento(cobra, comida, jogador);
 
         // Aguarda o intervalo de tempo antes do próximo movimento da cobra
         Sleep(velocidade);
     }
 
-    // Renderizar a tela final do jogo e exibir a pontuação
-    renderizarTabuleiro();
-    exibirPontuacao(jogador.pontuacao);
-}
+    renderizarTabuleiro(cobra, *comida);
+    exibirPontuacao(jogador->pontuacao);
 
+    // Liberar a memória alocada para a cobra, a comida e o jogador
+    liberarMemoria(cobra);
+    free(comida);
+    liberarJogador(jogador);
+
+    return cobra;
+}
 
 void encerrarJogo() {}
 
@@ -269,7 +282,58 @@ Jogador *criarJogador(const char *nome) {
   return jogador;
 }
 
-void renderizarTabuleiro() {}
+void renderizarTabuleiro(Cobra *cobra, Ponto comida) {
+    int i, j;
+
+    // Limpar a tela do console
+    system("cls || clear");
+
+    // Desenhar as bordas superiores
+    for (j = 0; j < largura + 2; j++) {
+        printf("#");
+    }
+    printf("\n");
+
+    for (i = 0; i < altura; i++) {
+        for (j = 0; j < largura; j++) {
+            if (j == 0) {
+                printf("#"); // Desenhar a parede esquerda
+            }
+
+            // Verificar se a posição atual contém a cabeça da cobra
+            if (i == cobra->cabeca->corpo.y && j == cobra->cabeca->corpo.x) {
+                printf("O"); // Desenhar a cabeça da cobra
+            } else {
+                No_Corpo *segmento = cobra->cabeca->prox;
+                while (segmento != NULL) {
+                    if (i == segmento->corpo.y && j == segmento->corpo.x) {
+                        printf("o"); // Desenhar o corpo da cobra
+                        break;
+                    }
+                    segmento = segmento->prox;
+                }
+                if (segmento == NULL) {
+                    if (i == comida.y && j == comida.x) {
+                        printf("*"); // Desenhar a comida
+                    } else {
+                        printf(" "); // Desenhar espaço vazio
+                    }
+                }
+            }
+
+            if (j == largura - 1) {
+                printf("#\n"); // Desenhar a parede direita
+            }
+        }
+    }
+
+    // Desenhar as bordas inferiores
+    for (j = 0; j < largura + 2; j++) {
+        printf("#");
+    }
+    printf("\n");
+}
+
 
 void lidarComEntradaUsuario() {}
 

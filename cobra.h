@@ -13,7 +13,6 @@ typedef struct jogo Jogo;
 //descrição do cabeçalho das funções
 
 
-
 //* Função no menu 
 
 
@@ -67,16 +66,16 @@ void moverCobra();
 void adicionarSegmento();
 
 // Cabeçalho da função para verificar colisão da cobra
-boolean verificarColisao(Cobra *cobra, int largura, int altura);
+void verificarColisao(Cobra *cobra, int largura, int altura);
 
 // Cabeçalho da função para atualizar a posição do alimento
-void atualizarPosicaoAlimento();
+Ponto *atualizarPosicaoAlimento();
 
 // Cabeçalho da função para verificar se a cobra comeu o alimento
 void verificarComerAlimento(Cobra *cobra, Ponto comida, Jogador *jogador);
 
 // Cabeçalho da função para iniciar o jogo
-void iniciarJogo();
+Cobra *iniciarJogo();
 
 // Cabeçalho da função para encerrar o jogo
 void encerrarJogo();
@@ -93,7 +92,7 @@ void atualizarTela();
 void exibirPontuacao();
 
 // Cabeçalho da função para verificar se o jogo acabou
-boolean verificarFimDoJogo();
+void verificarFimDoJogo();
 
 // Cabeçalho da função para inicializar o tabuleiro
 void inicializarTabuleiro();
