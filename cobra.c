@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <conio.h>
+
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -126,43 +128,43 @@ void mapa(void) {
   printf("\n");
 }
 
+
 void moverCobra(Cobra *cobra) {
-  switch (getchar()) {
-  case 'w':
-    cobra->direcao = UP;
-    break;
+    if (_kbhit()) { // Se houver entrada do teclado
+        char tecla = _getch(); // Recebe o caractere do teclado sem precisar pressionar Enter
+        
+        switch (tecla) {
+            case 'w':
+                cobra->direcao = UP;
+                break;
+            case 'a':
+                cobra->direcao = LEFT;
+                break;
+            case 's':
+                cobra->direcao = DOWN;
+                break;
+            case 'd':
+                cobra->direcao = RIGHT;
+                break;
+        }
+    }
 
-  case 'a':
-    cobra->direcao = LEFT;
-    break;
-
-  case 's':
-    cobra->direcao = DOWN;
-    break;
-
-  case 'd':
-    cobra->direcao = RIGHT;
-    break;
-  }
-
-  switch (cobra->direcao) {
-  case UP:
-    cobra->cabeca->corpo.y--;
-    break;
-
-  case DOWN:
-    cobra->cabeca->corpo.y++;
-    break;
-
-  case RIGHT:
-    cobra->cabeca->corpo.x++;
-    break;
-
-  case LEFT:
-    cobra->cabeca->corpo.x--;
-    break;
-  }
+    switch (cobra->direcao) {
+        case UP:
+            cobra->cabeca->corpo.y--;
+            break;
+        case DOWN:
+            cobra->cabeca->corpo.y++;
+            break;
+        case RIGHT:
+            cobra->cabeca->corpo.x++;
+            break;
+        case LEFT:
+            cobra->cabeca->corpo.x--;
+            break;
+    }
 }
+
 
 void adicionarSegmento(Cobra *cobra) {
 
@@ -332,8 +334,8 @@ void renderizarTabuleiro(Cobra *cobra, Ponto comida) {
         printf("#");
     }
     printf("\n");
+    printf("Pressione (Q) para sair!\n");
 }
-
 
 void lidarComEntradaUsuario() {}
 

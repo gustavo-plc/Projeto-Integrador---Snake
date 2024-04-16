@@ -9,7 +9,6 @@ int main() {
 
   // se a escolha for diferente de 5, ele continua... o que inicialmente é
   // verdade pois escolha é igual a 1
-  while (escolha != 5) {
 
     printf("\n\n ----------------------- ");
 
@@ -21,18 +20,13 @@ int main() {
     printf("\n\n Escolha uma opção: ");
     scanf("%d", &escolha);
 
+  while (escolha != 5) {
+
     // estrutura switch
     switch (escolha) {
 
     case 1: {
-      Cobra *c1;
-      Jogador *jogador;
-      int largura;
-      int altura;
-      Ponto *comida;
-
-      system("clear");
-      printf("\n\n Opção escolhida: 1 ");
+      
       iniciarJogo();
 
       break;
