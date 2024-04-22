@@ -1,20 +1,16 @@
 #include "cobra.h"
+#include <conio.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
-#include <conio.h>
-
-
-#ifdef _WIN32
 #include <Windows.h>
-#else
-#include <unistd.h>
-#endif
 
-#define INTERVALO_DE_TEMPO 500 
-//Intervalo de tempo entre cada movimento da cobra (em milissegundos)
 
+
+#define INTERVALO_DE_TEMPO 500
+// Intervalo de tempo entre cada movimento da cobra (em milissegundos)
 
 // definição das funções relacionadas ao jogo
 
@@ -128,10 +124,18 @@ void mapa(void) {
   printf("\n");
 }
 
+#include <conio.h>
+
+#include <conio.h>
 
 void moverCobra(Cobra *cobra) {
-    if (_kbhit()) { // Se houver entrada do teclado
-        char tecla = _getch(); // Recebe o caractere do teclado sem precisar pressionar Enter
+#ifdef _WIN32
+    // Define o modo de entrada para não bloqueante
+    _setcursortype(0); // 0 para ocultar o cursor
+
+    // Verifica se há entrada do teclado
+    if (_kbhit()) {
+        int tecla = _getch(); // Recebe o caractere do teclado sem precisar pressionar Enter
         
         switch (tecla) {
             case 'w':
@@ -148,20 +152,42 @@ void moverCobra(Cobra *cobra) {
                 break;
         }
     }
+#else
+    // Define o modo de entrada para não bloqueante
+    nodelay(stdscr, TRUE);
+
+    // Verifica se há entrada do teclado
+    int tecla = getch();
+
+    switch (tecla) {
+    case 'w':
+        cobra->direcao = UP;
+        break;
+    case 'a':
+        cobra->direcao = LEFT;
+        break;
+    case 's':
+        cobra->direcao = DOWN;
+        break;
+    case 'd':
+        cobra->direcao = RIGHT;
+        break;
+    }
+#endif
 
     switch (cobra->direcao) {
-        case UP:
-            cobra->cabeca->corpo.y--;
-            break;
-        case DOWN:
-            cobra->cabeca->corpo.y++;
-            break;
-        case RIGHT:
-            cobra->cabeca->corpo.x++;
-            break;
-        case LEFT:
-            cobra->cabeca->corpo.x--;
-            break;
+    case UP:
+        cobra->cabeca->corpo.y--;
+        break;
+    case DOWN:
+        cobra->cabeca->corpo.y++;
+        break;
+    case RIGHT:
+        cobra->cabeca->corpo.x++;
+        break;
+    case LEFT:
+        cobra->cabeca->corpo.x--;
+        break;
     }
 }
 
@@ -185,7 +211,7 @@ void adicionarSegmento(Cobra *cobra) {
 }
 
 int verificarColisao(Cobra *cobra, int *altura, int *largura) {
-  if (cobra->cabeca->corpo.x == 0 || cobra->cabeca->corpo.x == largura - 1 || 
+  if (cobra->cabeca->corpo.x == 0 || cobra->cabeca->corpo.x == largura - 1 ||
       cobra->cabeca->corpo.y == 0 || cobra->cabeca->corpo.y == altura - 1) {
     return true; // colisão com as paredes
   }
@@ -201,20 +227,27 @@ int verificarColisao(Cobra *cobra, int *altura, int *largura) {
 }
 
 Ponto *atualizarPosicaoAlimento() {
-    Ponto *comida = (Ponto *)malloc(sizeof(Ponto));
-    if (!comida) {
-        printf("Erro ao alocar a comida.\n");
-        return NULL;
-    }
-    comida->x = rand() % (largura - 2) + 1;  // Limita a comida dentro do mapa, excluindo as bordas
-    comida->y = rand() % (altura - 2) + 1;   // Limita a comida dentro do mapa, excluindo as bordas
-    return comida;
+  Ponto *comida = (Ponto *)malloc(sizeof(Ponto));
+  if (!comida) {
+    printf("Erro ao alocar a comida.\n");
+    return NULL;
+  }
+  comida->x = rand() % (largura - 2) +
+              1; // Limita a comida dentro do mapa, excluindo as bordas
+  comida->y = rand() % (altura - 2) +
+              1; // Limita a comida dentro do mapa, excluindo as bordas
+  return comida;
 }
 
-
-void verificarComerAlimento(Cobra *cobra, Ponto *comida, Jogador *jogador) // essa função terá que ser executada continuamente, dentro de um while na main talvez.
+void verificarComerAlimento(
+    Cobra *cobra, Ponto *comida,
+    Jogador *jogador) // essa função terá que ser executada continuamente,
+                      // dentro de um while na main talvez.
 {
-  if ((comida->x == cobra->cabeca->corpo.x) && (comida->y == cobra->cabeca->corpo.y)) // se a cabeça atingir a comida, a comida é gerada novamente e é adicionado um nó na cobra
+  if ((comida->x == cobra->cabeca->corpo.x) &&
+      (comida->y == cobra->cabeca->corpo
+                        .y)) // se a cabeça atingir a comida, a comida é gerada
+                             // novamente e é adicionado um nó na cobra
   {
     atualizarPosicaoAlimento(comida);
     adicionarSegmento(cobra);
@@ -223,52 +256,51 @@ void verificarComerAlimento(Cobra *cobra, Ponto *comida, Jogador *jogador) // es
 }
 
 Cobra *iniciarJogo() {
-    // Inicializar a cobra com uma posição inicial e direção inicial
-    int min = 2; // Limites do mapa
-    int max = 30; // Limites do mapa
-    int numero_aleatorio1, numero_aleatorio2;
+  // Inicializar a cobra com uma posição inicial e direção inicial
+  int min = 2;  // Limites do mapa
+  int max = 30; // Limites do mapa
+  int numero_aleatorio1, numero_aleatorio2;
 
-    // Definindo a semente com base no tempo atual
-    srand(time(NULL));
+  // Definindo a semente com base no tempo atual
+  srand(time(NULL));
 
-    // Gerando números aleatórios para inicializar a posição da cobra
-    numero_aleatorio1 = min + rand() % (max - min + 1);
-    numero_aleatorio2 = min + rand() % (max - min + 1);
+  // Gerando números aleatórios para inicializar a posição da cobra
+  numero_aleatorio1 = min + rand() % (max - min + 1);
+  numero_aleatorio2 = min + rand() % (max - min + 1);
 
-    // Inicializar a cobra
-    Cobra *cobra = inicializarCobra(numero_aleatorio1, numero_aleatorio2, DOWN);
+  // Inicializar a cobra
+  Cobra *cobra = inicializarCobra(numero_aleatorio1, numero_aleatorio2, DOWN);
 
-    // Definir a posição inicial da comida
+  // Definir a posição inicial da comida
 
-    Ponto *comida = atualizarPosicaoAlimento();
+  Ponto *comida = atualizarPosicaoAlimento();
 
-    // Configurar a velocidade inicial da cobra
-    int velocidade = INTERVALO_DE_TEMPO;
+  // Configurar a velocidade inicial da cobra
+  int velocidade = INTERVALO_DE_TEMPO;
 
-    // Inicializar o jogador e sua pontuação
-    Jogador *jogador = criarJogador("Jogador");
+  // Inicializar o jogador e sua pontuação
+  Jogador *jogador = criarJogador("Jogador");
 
+  // Loop principal do jogo
+  while (!verificarFimDoJogo) {
+    // Lógica da cobra e do jogo:
+    moverCobra(cobra);
+    verificarColisao(cobra, &altura, &largura);
+    verificarComerAlimento(cobra, comida, jogador);
 
-    // Loop principal do jogo
-    while (!verificarFimDoJogo) {
-        // Lógica da cobra e do jogo...
-        moverCobra(cobra);
-        verificarColisao(cobra, &altura, &largura);
-        verificarComerAlimento(cobra, comida, jogador);
+    // Aguarda o intervalo de tempo antes do próximo movimento da cobra
+    sleep(velocidade);
+  }
 
-        // Aguarda o intervalo de tempo antes do próximo movimento da cobra
-        Sleep(velocidade);
-    }
+  renderizarTabuleiro(cobra, *comida);
+  exibirPontuacao(jogador->pontuacao);
 
-    renderizarTabuleiro(cobra, *comida);
-    exibirPontuacao(jogador->pontuacao);
+  // Liberar a memória alocada para a cobra, a comida e o jogador
+  liberarMemoria(cobra);
+  free(comida);
+  liberarJogador(jogador);
 
-    // Liberar a memória alocada para a cobra, a comida e o jogador
-    liberarMemoria(cobra);
-    free(comida);
-    liberarJogador(jogador);
-
-    return cobra;
+  return cobra;
 }
 
 void encerrarJogo() {}
@@ -276,8 +308,8 @@ void encerrarJogo() {}
 Jogador *criarJogador(const char *nome) {
   Jogador *jogador = (Jogador *)malloc(sizeof(Jogador));
   if (jogador == NULL) {
-      printf("\nErro ao criar jogador.\n");
-      return NULL;
+    printf("\nErro ao criar jogador.\n");
+    return NULL;
   }
   strcpy(jogador->nome, nome);
   jogador->pontuacao = 0;
@@ -285,56 +317,56 @@ Jogador *criarJogador(const char *nome) {
 }
 
 void renderizarTabuleiro(Cobra *cobra, Ponto comida) {
-    int i, j;
+  int i, j;
 
-    // Limpar a tela do console
-    system("cls || clear");
+  // Limpar a tela do console
+  system("cls || clear");
 
-    // Desenhar as bordas superiores
-    for (j = 0; j < largura + 2; j++) {
-        printf("#");
-    }
-    printf("\n");
+  // Desenhar as bordas superiores
+  for (j = 0; j < largura + 2; j++) {
+    printf("#");
+  }
+  printf("\n");
 
-    for (i = 0; i < altura; i++) {
-        for (j = 0; j < largura; j++) {
-            if (j == 0) {
-                printf("#"); // Desenhar a parede esquerda
-            }
+  for (i = 0; i < altura; i++) {
+    for (j = 0; j < largura; j++) {
+      if (j == 0) {
+        printf("#"); // Desenhar a parede esquerda
+      }
 
-            // Verificar se a posição atual contém a cabeça da cobra
-            if (i == cobra->cabeca->corpo.y && j == cobra->cabeca->corpo.x) {
-                printf("O"); // Desenhar a cabeça da cobra
-            } else {
-                No_Corpo *segmento = cobra->cabeca->prox;
-                while (segmento != NULL) {
-                    if (i == segmento->corpo.y && j == segmento->corpo.x) {
-                        printf("o"); // Desenhar o corpo da cobra
-                        break;
-                    }
-                    segmento = segmento->prox;
-                }
-                if (segmento == NULL) {
-                    if (i == comida.y && j == comida.x) {
-                        printf("*"); // Desenhar a comida
-                    } else {
-                        printf(" "); // Desenhar espaço vazio
-                    }
-                }
-            }
-
-            if (j == largura - 1) {
-                printf("#\n"); // Desenhar a parede direita
-            }
+      // Verificar se a posição atual contém a cabeça da cobra
+      if (i == cobra->cabeca->corpo.y && j == cobra->cabeca->corpo.x) {
+        printf("O"); // Desenhar a cabeça da cobra
+      } else {
+        No_Corpo *segmento = cobra->cabeca->prox;
+        while (segmento != NULL) {
+          if (i == segmento->corpo.y && j == segmento->corpo.x) {
+            printf("o"); // Desenhar o corpo da cobra
+            break;
+          }
+          segmento = segmento->prox;
         }
-    }
+        if (segmento == NULL) {
+          if (i == comida.y && j == comida.x) {
+            printf("*"); // Desenhar a comida
+          } else {
+            printf(" "); // Desenhar espaço vazio
+          }
+        }
+      }
 
-    // Desenhar as bordas inferiores
-    for (j = 0; j < largura + 2; j++) {
-        printf("#");
+      if (j == largura - 1) {
+        printf("#\n"); // Desenhar a parede direita
+      }
     }
-    printf("\n");
-    printf("Pressione (Q) para sair!\n");
+  }
+
+  // Desenhar as bordas inferiores
+  for (j = 0; j < largura + 2; j++) {
+    printf("#");
+  }
+  printf("\n");
+  printf("Pressione (Q) para sair!\n");
 }
 
 void lidarComEntradaUsuario() {}
@@ -343,14 +375,12 @@ void atualizarTela() {}
 
 void exibirPontuacao() {}
 
-void liberarJogador(Jogador *jogador) {
-    free(jogador);
-}
+void liberarJogador(Jogador *jogador) { free(jogador); }
 
-int verificarFimDoJogo() { // Essa função vai precisar sendo verificada sempre com um while na main
-  
-  if (verificarColisao) 
-  {
+int verificarFimDoJogo() { // Essa função vai precisar sendo verificada sempre
+                           // com um while na main
+
+  if (verificarColisao) {
     return true; // retorna true para fim do jogo
   }
   return false; // enquanto não tem colisão retorna false
