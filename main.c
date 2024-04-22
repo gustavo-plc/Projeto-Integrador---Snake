@@ -26,13 +26,13 @@ int main() {
       continue;
     }
     
-  } while (escolha != 5);
+  } while (escolha < 0 || escolha > 5);
 
     // estrutura switch
     switch (escolha) {
 
     case 1: {
-      
+  
       iniciarJogo();
 
       break;

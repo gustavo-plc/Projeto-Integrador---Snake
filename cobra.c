@@ -8,7 +8,6 @@
 #include <Windows.h>
 
 
-
 #define INTERVALO_DE_TEMPO 500
 // Intervalo de tempo entre cada movimento da cobra (em milissegundos)
 
@@ -124,14 +123,9 @@ void mapa(void) {
   printf("\n");
 }
 
-#include <conio.h>
-
-#include <conio.h>
 
 void moverCobra(Cobra *cobra) {
-#ifdef _WIN32
     // Define o modo de entrada para não bloqueante
-    _setcursortype(0); // 0 para ocultar o cursor
 
     // Verifica se há entrada do teclado
     if (_kbhit()) {
@@ -152,28 +146,6 @@ void moverCobra(Cobra *cobra) {
                 break;
         }
     }
-#else
-    // Define o modo de entrada para não bloqueante
-    nodelay(stdscr, TRUE);
-
-    // Verifica se há entrada do teclado
-    int tecla = getch();
-
-    switch (tecla) {
-    case 'w':
-        cobra->direcao = UP;
-        break;
-    case 'a':
-        cobra->direcao = LEFT;
-        break;
-    case 's':
-        cobra->direcao = DOWN;
-        break;
-    case 'd':
-        cobra->direcao = RIGHT;
-        break;
-    }
-#endif
 
     switch (cobra->direcao) {
     case UP:
@@ -289,7 +261,8 @@ Cobra *iniciarJogo() {
     verificarComerAlimento(cobra, comida, jogador);
 
     // Aguarda o intervalo de tempo antes do próximo movimento da cobra
-    sleep(velocidade);
+      Sleep(velocidade);
+
   }
 
   renderizarTabuleiro(cobra, *comida);
