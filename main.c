@@ -33,9 +33,11 @@ int main() {
 
     case 1: {
   
-      iniciarJogo();
+    Cobra *jogo = iniciarJogo();
 
-      break;
+    system("pause");
+
+    break;
     }
 
     case 2: {
