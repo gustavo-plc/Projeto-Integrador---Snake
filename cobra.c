@@ -7,7 +7,7 @@
 #include <conio.h>
 #include <Windows.h>
 
-#define INTERVALO_DE_TEMPO 100
+#define INTERVALO_DE_TEMPO 200
 
 typedef struct jogador Jogador;
 
@@ -38,9 +38,11 @@ typedef struct cobra {
     No_Corpo *cabeca;
     No_Corpo *cauda;
     Direcao direcao;
+    unsigned int length;
 } Cobra;
 
 int altura = 25, largura = 37;
+
 
 void comoJogar(void) {
     printf("Use as teclas W (cima), A (esquerda) , S (baixo) e D (direita) para "
@@ -77,6 +79,7 @@ Cobra *inicializarCobra(int xInicial, int yInicial, Direcao direcaoInicial) {
     cobra->cabeca->ant = NULL;
 
     cobra->direcao = direcaoInicial;
+    cobra->length = 1;
 
     return cobra;
 }
@@ -130,18 +133,16 @@ void moverCobra(Cobra *cobra) {
     }
 }
 
-void adicionarSegmento(Cobra *cobra) {
-    if (!cobra)
-        return;
+void adicionarSegmento(Cobra *cobra, Ponto comida) {
+    if (!cobra) return;
     No_Corpo *novo = malloc(sizeof(No_Corpo));
-    novo->prox = NULL;
-    if (!novo)
-        return;
-    No_Corpo *aux = cobra->cabeca;
-    while (aux->prox != NULL)
-        aux = aux->prox;
-    aux->prox = novo;
-    cobra->cauda = novo;
+    if (!novo) return;
+    novo->prox = cobra->cabeca;
+    novo->ant = NULL;
+    novo->corpo = comida;
+    cobra->cabeca->ant = novo;
+    cobra->cabeca = novo;
+    cobra->length++;
 }
 
 int verificarColisao(Cobra *cobra, int *altura, int *largura) {
@@ -172,10 +173,16 @@ Ponto *atualizarPosicaoAlimento() {
 }
 
 void verificarComerAlimento(Cobra *cobra, Ponto *comida, Jogador *jogador) {
-    if ((comida->x == cobra->cabeca->corpo.x) &&
-        (comida->y == cobra->cabeca->corpo.y)) {
+    int x = cobra->cabeca->corpo.x;
+    int y = cobra->cabeca->corpo.y;
+    if (cobra->direcao == LEFT) x--;
+    if(cobra->direcao == RIGHT) x++;
+    if(cobra->direcao == UP) y--;
+    if(cobra->direcao == DOWN) y++;
+    
+    if ((comida->x == x) && (comida->y == x)) {
+        adicionarSegmento(cobra, *comida);
         atualizarPosicaoAlimento(comida);
-        adicionarSegmento(cobra);
         jogador->pontuacao = jogador->pontuacao + 5;
     }
 }
