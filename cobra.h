@@ -21,40 +21,6 @@ void comoJogar(void);
 void mostrarCreditos(void);
 void sairJogo(void);
 
-/*Funções para implementação do jogo
-
-
-
-
-1. Inicialização do jogo:
-Função para inicializar o estado do jogo, incluindo a criação da cobra, configuração da posição inicial, comprimento, direção inicial, etc.
-
-2. Atualização do jogo:
-Função para atualizar o estado do jogo a cada iteração do loop principal do jogo. Isso inclui mover a cobra, verificar colisões, gerar itens (por exemplo, comida para a cobra), atualizar a pontuação, etc.
-
-3. Manipulação da cobra:
-Função para mover a cobra com base na direção atual.
-Função para adicionar um novo segmento à cobra quando ela come um item (por exemplo, comida).
-Função para remover o último segmento da cobra quando ela se move.
-
-4. Manipulação da lista encadeada:
-Função para criar um novo segmento da cobra e adicioná-lo à lista encadeada.
-Função para remover o último segmento da cobra da lista encadeada.
-Função para percorrer a lista encadeada e atualizar as posições dos segmentos da cobra.
-
-5. Verificação de colisões:
-Função para verificar se a cobra colidiu com as bordas da tela ou consigo mesma.
-
-6. Controle de entrada:
-Função para capturar a entrada do jogador (por exemplo, teclas de seta) e atualizar a direção da cobra.
-
-7. Renderização do jogo:
-Função para desenhar a cobra, itens e outras partes do jogo na tela.
-
-8. Finalização do jogo:
-Função para encerrar o jogo quando o jogador perder (por exemplo, cobra colidiu consigo mesma ou com as bordas da tela).
-
-*/
 
 // Cabeçalho da função para inicializar a cobra
 Cobra* inicializarCobra();

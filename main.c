@@ -3,88 +3,64 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <windows.h>
+#include <conio.h>
 
 
 int main() {
  
-    SetConsoleOutputCP(CP_UTF8);
+  SetConsoleOutputCP(CP_UTF8);
   int escolha;
 
-  // se a escolha for diferente de 5, ele continua... o que inicialmente é
-  // verdade pois escolha é igual a 1
-  do {
-    printf("\n\n ----------------------- ");
+  while (1) {
+        printf("\n\n ----------------------- ");
+        printf("\n 1 - NOVO JOGO ");
+        printf("\n 2 - COMO JOGAR ");
+        printf("\n 3 - RANKING ");
+        printf("\n 4 - CRÉDITOS ");
+        printf("\n 5 - SAIR DO JOGO ");
+        printf("\n\n Escolha uma opção: ");
+        scanf("%d", &escolha);
 
-    printf("\n 1 - NOVO JOGO ");
-    printf("\n 2 - COMO JOGAR ");
-    printf("\n 3 - RANKING ");
-    printf("\n 4 - CRÉDITOS ");
-    printf("\n 5 - SAIR DO JOGO ");
-    printf("\n\n Escolha uma opção: ");
-    scanf("%d", &escolha);
+        switch (escolha) {
+            case 1: {
+                Cobra *jogo = iniciarJogo();
+                system("pause");
+                break;
+            }
 
-    // se for escolhida a opção 5, ele pula o while utilizando continue para
-    // isso
-    if (escolha == 5) {
-      continue;
-    }
-    
-  } while (escolha < 0 || escolha > 5);
+            case 2: {
+                system("cls");
+                printf("\n\nREGRAS DO JOGO \n");
+                comoJogar();
+                printf("\nPressione qualquer tecla para voltar ao menu inicial.\n\n");
+                _getch(); // Aguarda o usuário pressionar qualquer tecla
+                break;
+            }
 
-    // estrutura switch
-    switch (escolha) {
+            case 3: {
+                system("cls");
+                printf("\n\n Opção escolhida: 3 ");
+                break;
+            }
 
-    case 1: {
-    system("cls");
-    Cobra *jogo = iniciarJogo();
+            case 4: {
+                system("cls");
+                printf("\n\n Opção escolhida: 4 ");
+                break;
+            }
 
-    system("pause");
+            case 5: {
+                printf("\n\n Aguardamos você em breve para uma nova partida!");
+                return 0; // Saia do programa
+            }
 
-    break;
-    }
-
-    case 2: {
-      system("cls");
-      printf("\n\nREGRAS DO JOGO \n");
-      comoJogar();
-      escolha = -1;
-      break;
-    }
-
-    case 3: {
-      system("cls");
-      printf("\n\n Opção escolhida: 3 ");
-      break;
-    }
-
-    case 4: {
-      system("cls");
-      printf("\n\n Opção escolhida: 4 ");
-      break;
+            default: {
+                system("cls");
+                printf("\n\n Nenhuma opção foi escolhida ");
+                break;
+            }
+        }
     }
 
-    // opção padrão
-    default: {
-      system("cls");
-  
-      // caso o usuário digite um numero acima de 5, ele irá informar que nao
-      // existe essa opção
-      printf("\n\n Nenhuma opção foi escolhida ");
-      break;
-    }
-    }
-
-  if (escolha == 5)
-    printf("\n\n Aguardamos você em breve para uma nova partida!");
+    return 0;
 }
-
-// int main() {
-//   // setlocale(LC_ALL, "en_US.UTF-8");
-//   // setlocale(LC_ALL, "Portuguese_Brasil");
-
-//   limpar_tela();
-//   mover_cursor_xy(5, 5);
-//   printf("Texto na posição 5,5");
-
-//   return 0;
-// }

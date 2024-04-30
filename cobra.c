@@ -45,10 +45,9 @@ int altura = 25, largura = 37;
 
 
 void comoJogar(void) {
-    printf("Use as teclas W (cima), A (esquerda), S (baixo) e D (direita) para mover a cobra. \n");
-    printf("O jogador ganha pontos quando a cobra come a comida, o que também faz ela aumentar de tamanho. \n");
-    printf("O jogo acaba quando a cobra colide com o próprio corpo ou com as paredes do mapa. \n");
-    printf("\nPressione qualquer tecla para voltar ao menu inicial.\n");
+    printf("\n\n1) Use as teclas W (cima), A (esquerda), S (baixo) e D (direita) para mover a cobra. \n");
+    printf("\n2) O jogador ganha pontos quando a cobra come a comida, o que também faz ela aumentar de tamanho. \n");
+    printf("\n3) O jogo acaba quando a cobra colide com o próprio corpo ou com as paredes do mapa. \n");
 }
 
 Cobra *inicializarCobra(int xInicial, int yInicial, Direcao direcaoInicial) {
