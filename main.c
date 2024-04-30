@@ -1,10 +1,13 @@
 #include "cobra.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <locale.h>
+#include <windows.h>
 
 
 int main() {
-
+ 
+    SetConsoleOutputCP(CP_UTF8);
   int escolha;
 
   // se a escolha for diferente de 5, ele continua... o que inicialmente é
@@ -32,7 +35,7 @@ int main() {
     switch (escolha) {
 
     case 1: {
-  
+    system("cls");
     Cobra *jogo = iniciarJogo();
 
     system("pause");
@@ -41,27 +44,28 @@ int main() {
     }
 
     case 2: {
-      system("clear");
-      printf("\n\n Opção escolhida: 2 ");
+      system("cls");
+      printf("\n\nREGRAS DO JOGO \n");
       comoJogar();
+      escolha = -1;
       break;
     }
 
     case 3: {
-      system("clear");
+      system("cls");
       printf("\n\n Opção escolhida: 3 ");
       break;
     }
 
     case 4: {
-      system("clear");
+      system("cls");
       printf("\n\n Opção escolhida: 4 ");
       break;
     }
 
     // opção padrão
     default: {
-      system("clear");
+      system("cls");
   
       // caso o usuário digite um numero acima de 5, ele irá informar que nao
       // existe essa opção
