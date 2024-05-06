@@ -7,7 +7,7 @@
 #include <conio.h>
 #include <Windows.h>
 
-#define INTERVALO_DE_TEMPO 200
+#define INTERVALO_DE_TEMPO 100
 
 typedef struct jogador Jogador;
 
@@ -40,8 +40,6 @@ typedef struct cobra {
     Direcao direcao;
     unsigned int length;
 } Cobra;
-
-int altura = 25, largura = 37;
 
 
 void comoJogar(void) {
@@ -83,40 +81,68 @@ Cobra *inicializarCobra(int xInicial, int yInicial, Direcao direcaoInicial) {
     return cobra;
 }
 
+int altura = 25, largura = 50;
+char *mapaBuffer = NULL;
+
 void mapa(void) {
-    for (int j = 0; j < largura; j++) {
-        printf("#");
+  for (int j = 0; j < largura; j++) {
+    sprintf(mapa, "#");
+    //   printf("#");
+  }
+  printf("\n");
+  for (int h = 0; h < altura; h++) {
+      sprintf(mapa, "#");
+        //   printf("#");
+    for (int w = 0; w < largura - 2; w++) {
+      sprintf(mapa, " ");
+        //   printf(" ");
     }
-    printf("\n");
-    for (int h = 0; h < altura; h++) {
-        printf("#                                   #\n");
+    sprintf(mapa, "#");
+    //   printf("#");
+  }
+  for (int j = 0; j < largura; j++) {
+    sprintf(mapa, "#");
+    //   printf("#");
+  }
+    sprintf(mapa, "\n");
+    //   printf("#");
+    printf("%s", mapa);
+}
+
+void obterDirecao(Cobra *cobra) {
+    if (_kbhit()) {
+    int tecla = _getch();
+
+    switch (tecla) {
+    case 'w':
+      if (cobra->direcao != DOWN)
+        cobra->direcao = UP;
+      break;
+    case 'a':
+      if (cobra->direcao != RIGHT)
+        cobra->direcao = LEFT;
+      break;
+    case 's':
+      if (cobra->direcao != UP)
+        cobra->direcao = DOWN;
+      break;
+    case 'd':
+      if (cobra->direcao != LEFT)
+        cobra->direcao = RIGHT;
+      break;
     }
-    for (int j = 0; j < largura; j++) {
-        printf("#");
-    }
-    printf("\n");
+  }
 }
 
 void moverCobra(Cobra *cobra) {
-    if (_kbhit()) {
-        int tecla = _getch(); // Recebe o caractere do teclado sem precisar pressionar Enter
-        switch (tecla) {
-        case 'w':
-            cobra->direcao = UP;
-            break;
-        case 'a':
-            cobra->direcao = LEFT;
-            break;
-        case 's':
-            cobra->direcao = DOWN;
-            break;
-        case 'd':
-            cobra->direcao = RIGHT;
-            break;
-        }
+
+    No_Corpo *corpo = cobra->cauda;
+    while(corpo) {
+        
     }
 
-    switch (cobra->direcao) {
+    switch (cobra->direcao)
+    {
     case UP:
         cobra->cabeca->corpo.y--;
         break;
@@ -129,7 +155,7 @@ void moverCobra(Cobra *cobra) {
     case LEFT:
         cobra->cabeca->corpo.x--;
         break;
-    }
+  }
 }
 
 void adicionarSegmento(Cobra *cobra, Ponto comida) {
@@ -174,19 +200,35 @@ Ponto *atualizarPosicaoAlimento() {
 void verificarComerAlimento(Cobra *cobra, Ponto *comida, Jogador *jogador) {
     int x = cobra->cabeca->corpo.x;
     int y = cobra->cabeca->corpo.y;
-    if (cobra->direcao == LEFT) x--;
-    if(cobra->direcao == RIGHT) x++;
-    if(cobra->direcao == UP) y--;
-    if(cobra->direcao == DOWN) y++;
-    
-    if ((comida->x == x) && (comida->y == x)) {
+
+    // Atualiza as coordenadas com base na direção da cobra
+    switch(cobra->direcao) {
+        case LEFT:
+            x--;
+            break;
+        case RIGHT:
+            x++;
+            break;
+        case UP:
+            y--;
+            break;
+        case DOWN:
+            y++;
+            break;
+    }
+
+    // Verifica se a cobra alcançou a comida
+    if ((comida->x == x) && (comida->y == y)) {
         adicionarSegmento(cobra, *comida);
-        atualizarPosicaoAlimento(comida);
-        jogador->pontuacao = jogador->pontuacao + 5;
+        free(comida); // Liberar a memória da comida atual
+        *comida = *atualizarPosicaoAlimento(); // Gera uma nova posição para a comida
+        jogador->pontuacao += 5;
     }
 }
 
 Cobra *iniciarJogo() {
+
+    mapaBuffer = (char *) malloc(sizeof(char) * largura * altura);
     int min = 2;
     int max = 30;
     int numero_aleatorio1, numero_aleatorio2;
@@ -205,6 +247,7 @@ Cobra *iniciarJogo() {
     Jogador *jogador = criarJogador("Jogador");
 
     while (!verificarFimDoJogo(&cobra, &altura, &largura)) {
+        obterDirecao(cobra);
         moverCobra(cobra);
         verificarColisao(cobra, &altura, &largura);
         verificarComerAlimento(cobra, comida, jogador);
