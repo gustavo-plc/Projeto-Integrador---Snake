@@ -45,7 +45,13 @@ int main() {
 
             case 4: {
                 system("cls");
-                printf("\n\n Opção escolhida: 4 ");
+                printf("\n\nJOGO DESENVOLVIDO POR: \n\n");
+                printf("\nNome 1 \n");
+                printf("\nNome 2 \n");
+                printf("\nNome 3 \n");
+                printf("\nNome 4 \n");
+                printf("\n\nPressione qualquer tecla para voltar ao menu inicial.\n\n");
+                _getch(); // Aguarda o usuário pressionar qualquer tecla
                 break;
             }
 
