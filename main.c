@@ -50,7 +50,7 @@ int main() {
             }
 
             case 5: {
-                printf("\n\n Aguardamos você em breve para uma nova partida!");
+                printf("\nAguardamos você em breve para uma nova partida!\n");
                 return 0; // Saia do programa
             }
 

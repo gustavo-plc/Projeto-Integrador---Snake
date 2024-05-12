@@ -61,12 +61,7 @@ Cobra *inicializarCobra(int xInicial, int yInicial, Direcao direcaoInicial) {
         exit(EXIT_FAILURE);
     }
 
-    cobra->cauda = (No_Corpo *)malloc(sizeof(No_Corpo));
-    if (cobra->cauda == NULL) {
-        fprintf(stderr, "Erro ao inicializar o jogo. \n");
-        exit(EXIT_FAILURE);
-    }
-
+    cobra->cauda = cobra->cabeca;
     cobra->cabeca->corpo.x = xInicial;
     cobra->cabeca->corpo.y = yInicial;
     cobra->cabeca->prox = NULL;
@@ -81,33 +76,44 @@ Cobra *inicializarCobra(int xInicial, int yInicial, Direcao direcaoInicial) {
     return cobra;
 }
 
-int altura = 25, largura = 50;
+int altura = 30, largura = 80;
 char *mapaBuffer = NULL;
 
-void mapa(void) {
-  for (int j = 0; j < largura; j++) {
-    sprintf(mapa, "#");
-    //   printf("#");
-  }
-  printf("\n");
-  for (int h = 0; h < altura; h++) {
-      sprintf(mapa, "#");
-        //   printf("#");
-    for (int w = 0; w < largura - 2; w++) {
-      sprintf(mapa, " ");
-        //   printf(" ");
+
+void renderizarTabuleiro(Cobra *cobra, Ponto comida) {
+    // Limpa o mapaBuffer
+    memset(mapaBuffer, ' ', (largura + 2) * (altura + 2));
+
+    // Posiciona a cabeça da cobra no mapaBuffer
+    mapaBuffer[(cobra->cabeca->corpo.y) * (largura + 2) + cobra->cabeca->corpo.x] = 'O';
+
+    // Posiciona o corpo da cobra no mapaBuffer
+    No_Corpo *segmento = cobra->cabeca->prox;
+    while (segmento != NULL) {
+        mapaBuffer[(segmento->corpo.y) * (largura + 2) + segmento->corpo.x] = 'o';
+        segmento = segmento->prox;
     }
-    sprintf(mapa, "#");
-    //   printf("#");
-  }
-  for (int j = 0; j < largura; j++) {
-    sprintf(mapa, "#");
-    //   printf("#");
-  }
-    sprintf(mapa, "\n");
-    //   printf("#");
-    printf("%s", mapa);
+
+    // Posiciona a comida no mapaBuffer
+    mapaBuffer[(comida.y) * (largura + 2) + comida.x] = '*';
+
+    // Imprime o mapaBuffer
+    system("cls");
+    for (int i = 0; i < altura + 2; i++) {
+        for (int j = 0; j < largura + 2; j++) {
+            char c = mapaBuffer[i * (largura + 2) + j];
+            if (i == 0 || i == altura + 1 || j == 0 || j == largura + 1)
+                printf("#");
+            else
+                printf("%c", c);
+        }
+        printf("\n");
+    }
+
+    printf("Pressione (Q) para sair!\n");
 }
+
+
 
 void obterDirecao(Cobra *cobra) {
     if (_kbhit()) {
@@ -135,12 +141,12 @@ void obterDirecao(Cobra *cobra) {
 }
 
 void moverCobra(Cobra *cobra) {
-
-    No_Corpo *corpo = cobra->cauda;
-    while(corpo) {
-        
+    No_Corpo *no_corpo = cobra->cauda;
+    while(no_corpo->ant != NULL) {
+        no_corpo->corpo.x = no_corpo->ant->corpo.x;
+        no_corpo->corpo.y = no_corpo->ant->corpo.y;
+        no_corpo = no_corpo->ant;
     }
-
     switch (cobra->direcao)
     {
     case UP:
@@ -227,8 +233,6 @@ void verificarComerAlimento(Cobra *cobra, Ponto *comida, Jogador *jogador) {
 }
 
 Cobra *iniciarJogo() {
-
-    mapaBuffer = (char *) malloc(sizeof(char) * largura * altura);
     int min = 2;
     int max = 30;
     int numero_aleatorio1, numero_aleatorio2;
@@ -246,6 +250,22 @@ Cobra *iniciarJogo() {
 
     Jogador *jogador = criarJogador("Jogador");
 
+    // Inicializar o mapaBuffer
+    mapaBuffer = (char *)malloc(sizeof(char) * (largura + 3) * (altura + 3));
+    if (!mapaBuffer) {
+        printf("Erro ao alocar memória para o mapaBuffer.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    for (int i = 0; i < altura + 2; i++) {
+        for (int j = 0; j < largura + 2; j++) {
+            if (i == 0 || i == altura + 1 || j == 0 || j == largura + 1)
+                mapaBuffer[i * (largura + 3) + j] = '#';
+            else
+                mapaBuffer[i * (largura + 3) + j] = ' ';
+        }
+    }
+
     while (!verificarFimDoJogo(&cobra, &altura, &largura)) {
         obterDirecao(cobra);
         moverCobra(cobra);
@@ -257,59 +277,15 @@ Cobra *iniciarJogo() {
 
     liberarMemoria(cobra);
     free(comida);
+    free(mapaBuffer);
     liberarJogador(jogador);
 
     return cobra;
 }
 
-void renderizarTabuleiro(Cobra *cobra, Ponto comida) {
-    int i, j;
 
-    system("cls");
 
-    for (j = 0; j < largura + 2; j++) {
-        printf("#");
-    }
-    printf("\n");
 
-    for (i = 0; i < altura; i++) {
-        for (j = 0; j < largura; j++) {
-            if (j == 0) {
-                printf("#");
-            }
-
-            if (i == cobra->cabeca->corpo.y && j == cobra->cabeca->corpo.x) {
-                printf("O");
-            } else {
-                No_Corpo *segmento = cobra->cabeca->prox;
-                while (segmento != NULL) {
-                    if (i == segmento->corpo.y && j == segmento->corpo.x) {
-                        printf("o");
-                        break;
-                    }
-                    segmento = segmento->prox;
-                }
-                if (segmento == NULL) {
-                    if (i == comida.y && j == comida.x) {
-                        printf("*");
-                    } else {
-                        printf(" ");
-                    }
-                }
-            }
-
-            if (j == largura - 1) {
-                printf("#\n");
-            }
-        }
-    }
-
-    for (j = 0; j < largura + 2; j++) {
-        printf("#");
-    }
-    printf("\n");
-    printf("Pressione (Q) para sair!\n");
-}
 
 Jogador *criarJogador(const char *nome) {
     Jogador *jogador = (Jogador *)malloc(sizeof(Jogador));

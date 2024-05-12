@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"vetor.h": "c",
+			"cobra.h": "c",
+			"conio.h": "c",
+			"string.h": "c",
+			"locale.h": "c"
+		}
+	}
+}
