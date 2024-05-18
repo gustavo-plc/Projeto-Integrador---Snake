@@ -81,7 +81,7 @@ Cobra *inicializarCobra(int xInicial, int yInicial, Direcao direcaoInicial) {
     return cobra;
 }
 
-int altura = 30, largura = 80;
+int altura = 15, largura = 40;
 char *mapaBuffer = NULL;
 
 
@@ -248,7 +248,7 @@ Cobra *iniciarJogo() {
     numero_aleatorio1 = min + rand() % (max - min + 1);
     numero_aleatorio2 = min + rand() % (max - min + 1);
 
-    Cobra *cobra = inicializarCobra(numero_aleatorio1, numero_aleatorio2, DOWN);
+    Cobra *cobra = inicializarCobra(numero_aleatorio1, numero_aleatorio2, RIGHT);
 
     Ponto *comida = atualizarPosicaoAlimento();
 
