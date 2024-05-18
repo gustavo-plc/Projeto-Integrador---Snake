@@ -80,7 +80,7 @@ int altura = 30, largura = 80;
 char *mapaBuffer = NULL;
 
 
-void renderizarTabuleiro(Cobra *cobra, Ponto comida) {
+void renderizarTabuleiro(Cobra *cobra, Ponto comida, Jogador *jogador) {
     // Limpa o mapaBuffer
     memset(mapaBuffer, ' ', (largura + 2) * (altura + 2));
 
@@ -110,6 +110,7 @@ void renderizarTabuleiro(Cobra *cobra, Ponto comida) {
         printf("\n");
     }
 
+    exibirPontuacao(jogador);
     printf("Pressione (Q) para sair!\n");
 }
 
@@ -271,7 +272,7 @@ Cobra *iniciarJogo() {
         moverCobra(cobra);
         verificarColisao(cobra, &altura, &largura);
         verificarComerAlimento(cobra, comida, jogador);
-        renderizarTabuleiro(cobra, *comida);
+        renderizarTabuleiro(cobra, *comida, jogador);
         Sleep(velocidade);
     }
 
@@ -282,9 +283,6 @@ Cobra *iniciarJogo() {
 
     return cobra;
 }
-
-
-
 
 
 Jogador *criarJogador(const char *nome) {
