@@ -28,6 +28,11 @@ typedef enum direcao {
     RIGHT,
 } Direcao;
 
+typedef struct pontuacao {
+    char nome[50];
+    int pontuacao;
+} Pontuacao;
+
 typedef struct no_corpo {
     struct ponto corpo;
     struct no_corpo *prox;
@@ -249,7 +254,7 @@ Cobra *iniciarJogo() {
 
     int velocidade = INTERVALO_DE_TEMPO;
 
-    Jogador *jogador = criarJogador("Jogador");
+    Jogador *jogador = criarJogador("Jogador 1");
 
     // Inicializar o mapaBuffer
     mapaBuffer = (char *)malloc(sizeof(char) * (largura + 3) * (altura + 3));
@@ -267,10 +272,9 @@ Cobra *iniciarJogo() {
         }
     }
 
-    while (!verificarFimDoJogo(&cobra, &altura, &largura)) {
+    while (!verificarFimDoJogo(&cobra, &altura, &largura, jogador)) {
         obterDirecao(cobra);
         moverCobra(cobra);
-        verificarColisao(cobra, &altura, &largura);
         verificarComerAlimento(cobra, comida, jogador);
         renderizarTabuleiro(cobra, *comida, jogador);
         Sleep(velocidade);
@@ -284,7 +288,6 @@ Cobra *iniciarJogo() {
     return cobra;
 }
 
-
 Jogador *criarJogador(const char *nome) {
     Jogador *jogador = (Jogador *)malloc(sizeof(Jogador));
     if (jogador == NULL) {
@@ -296,14 +299,100 @@ Jogador *criarJogador(const char *nome) {
     return jogador;
 }
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void exibirRanking() {
+    FILE *file = fopen("pontuacoes.txt", "r");
+    if (file == NULL) {
+        printf("Erro ao abrir o arquivo de pontuações.\n");
+        return;
+    }
+
+    // Contar o número de linhas (pontuações) no arquivo
+    int numLinhas = 0;
+    char linha[100];
+    while (fgets(linha, sizeof(linha), file)) {
+        numLinhas++;
+    }
+    rewind(file); // Retorna o ponteiro do arquivo para o início
+
+    // Alocar memória para o vetor de pontuações
+    Pontuacao *pontuacoes = malloc(numLinhas * sizeof(Pontuacao));
+    if (pontuacoes == NULL) {
+        printf("Erro ao alocar memória.\n");
+        fclose(file);
+        return;
+    }
+
+    // Ler as pontuações do arquivo e armazená-las no vetor de pontuações
+    for (int i = 0; i < numLinhas; i++) {
+        fscanf(file, "Nome: %49[^,], Pontuação: %d\n", pontuacoes[i].nome, &pontuacoes[i].pontuacao);
+    }
+
+    fclose(file);
+
+    // Ordenar as pontuações em ordem decrescente
+    for (int i = 0; i < numLinhas - 1; i++) {
+        for (int j = i + 1; j < numLinhas; j++) {
+            if (pontuacoes[j].pontuacao > pontuacoes[i].pontuacao) {
+                Pontuacao temp = pontuacoes[i];
+                pontuacoes[i] = pontuacoes[j];
+                pontuacoes[j] = temp;
+            }
+        }
+    }
+
+    // Exibir o ranking ordenado
+    printf("\n--- Ranking de Pontuações ---\n");
+    for (int i = 0; i < numLinhas; i++) {
+        printf("Nome: %s, Pontuação: %d\n", pontuacoes[i].nome, pontuacoes[i].pontuacao);
+    }
+
+    free(pontuacoes);
+    printf("\nPressione qualquer tecla para voltar ao menu inicial.\n\n");
+    _getch(); // Aguarda o usuário pressionar qualquer tecla
+}
+
+
+
+void salvarPontuacao(Jogador *jogador) {
+    FILE *file = fopen("pontuacoes.txt", "a");
+    if (file == NULL) {
+        printf("Erro ao abrir o arquivo para salvar a pontuação.\n");
+        return;
+    }
+
+    fprintf(file, "Nome: %s, Pontuação: %d\n", jogador->nome, jogador->pontuacao);
+    fclose(file);
+    printf("\nPontuação salva com sucesso!\n");
+}
+
+
 void liberarJogador(Jogador *jogador) { free(jogador); }
 
-int verificarFimDoJogo(Cobra **cobra, int *altura, int *largura) {
+int verificarFimDoJogo(Cobra **cobra, int *altura, int *largura, Jogador *jogador) {
     if (verificarColisao(*cobra, altura, largura)) {
-        return true;
+        char resp;
+        printf("\nDeseja salvar sua pontuação? Entre com (S) para Sim ou qualquer outra para Não.\n");
+        getchar(); // Limpar o buffer de entrada
+        scanf("%c", &resp);
+
+        if (resp == 'S' || resp == 's') {
+            printf("Digite seu nome: ");
+            getchar(); // Limpar o buffer de entrada
+            fgets(jogador->nome, 50, stdin);
+            jogador->nome[strcspn(jogador->nome, "\n")] = 0; // Remover o newline do final
+
+            salvarPontuacao(jogador);
+        }
+
+        return 1; // Indica que o jogo acabou
     }
-    return false;
+    return 0; // O jogo continua
 }
+
 
 void liberarMemoria(Cobra *cobra) {
     No_Corpo *atual = cobra->cabeca;
@@ -316,3 +405,6 @@ void liberarMemoria(Cobra *cobra) {
     cobra->cauda = NULL;
 }
 
+void exibirPontuacao(Jogador *jogador) {
+    printf("Pontuação: %d\n", jogador->pontuacao);
+}

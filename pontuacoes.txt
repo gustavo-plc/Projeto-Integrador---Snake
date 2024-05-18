@@ -1,0 +1,6 @@
+Nome: Gustavo, Pontuação: 4199686
+Nome: Gusta, Pontuação: 0
+Nome: Gusta teste, Pontuação: 25
+Nome: Gusta teste 2, Pontuação: 25
+Nome: maysa, Pontuação: 30
+Nome: Teste ordenado, Pontuação: 15

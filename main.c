@@ -39,7 +39,7 @@ int main() {
 
             case 3: {
                 system("cls");
-                printf("\n\n Opção escolhida: 3 ");
+                exibirRanking();
                 break;
             }
 

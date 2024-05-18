@@ -46,6 +46,8 @@ Cobra *iniciarJogo();
 // Cabeçalho da função para encerrar o jogo
 void encerrarJogo();
 
+void exibirRanking();
+
 void renderizarTabuleiro();
 
 // Cabeçalho da função para lidar com entrada do usuário
