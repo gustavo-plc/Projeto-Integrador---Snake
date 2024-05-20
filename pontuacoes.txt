@@ -4,3 +4,6 @@ Nome: Gusta teste, Pontuação: 25
 Nome: Gusta teste 2, Pontuação: 25
 Nome: maysa, Pontuação: 30
 Nome: Teste ordenado, Pontuação: 15
+Nome: Gustavo teste 20-05, Pontuação: 75
+Nome: Teste 1, Pontuação: 20
+Nome: teste em grupo, Pontuação: 5

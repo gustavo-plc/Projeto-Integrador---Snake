@@ -103,8 +103,10 @@ void renderizarTabuleiro(Cobra *cobra, Ponto comida, Jogador *jogador) {
     mapaBuffer[(comida.y) * (largura + 2) + comida.x] = '*';
 
     // Imprime o mapaBuffer
-    system("cls");
-    for (int i = 0; i < altura + 2; i++) {
+    // system("cls");
+    printf("\x1b[2J\x1b[0;0H");
+    for (int i = 0; i < altura + 2; i++)
+    {
         for (int j = 0; j < largura + 2; j++) {
             char c = mapaBuffer[i * (largura + 2) + j];
             if (i == 0 || i == altura + 1 || j == 0 || j == largura + 1)
