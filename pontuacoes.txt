@@ -7,3 +7,4 @@ Nome: Teste ordenado, Pontuação: 15
 Nome: Gustavo teste 20-05, Pontuação: 75
 Nome: Teste 1, Pontuação: 20
 Nome: teste em grupo, Pontuação: 5
+Nome: teste45, Pontuação: 70

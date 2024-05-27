@@ -7,7 +7,7 @@
 #include <conio.h>
 #include <Windows.h>
 
-#define INTERVALO_DE_TEMPO 100
+#define INTERVALO_DE_TEMPO 70
 
 typedef struct jogador Jogador;
 
@@ -81,8 +81,34 @@ Cobra *inicializarCobra(int xInicial, int yInicial, Direcao direcaoInicial) {
     return cobra;
 }
 
-int altura = 15, largura = 40;
+int altura = 25, largura = 30;
 char *mapaBuffer = NULL;
+
+
+void desenharBuffer(Jogador *jogador) {
+    COORD coord = {0, 0};
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+
+    for (int i = 0; i < altura + 2; i++) {
+        for (int j = 0; j < largura + 2; j++) {
+            char c = mapaBuffer[i * (largura + 2) + j];
+            if (i == 0 || i == altura + 1 || j == 0 || j == largura + 1)
+                printf("\x1b[100m  \x1b[0m"); // Fundo cinza para as bordas
+            else if (c == 'O')
+                printf("\x1b[42m  \x1b[0m"); // Fundo verde para a cabeça da cobra
+            else if (c == 'o')
+                printf("\x1b[42m  \x1b[0m"); // Fundo verde para o corpo da cobra
+            else if (c == '*')
+                printf("\x1b[43m  \x1b[0m"); // Fundo amarelo para a comida
+            else
+                printf("  "); // Espaço em branco para o fundo
+        }
+        printf("\n");
+    }
+
+    exibirPontuacao(jogador);
+    printf("Pressione (Q) para sair!\n");
+}
 
 
 void renderizarTabuleiro(Cobra *cobra, Ponto comida, Jogador *jogador) {
@@ -102,23 +128,8 @@ void renderizarTabuleiro(Cobra *cobra, Ponto comida, Jogador *jogador) {
     // Posiciona a comida no mapaBuffer
     mapaBuffer[(comida.y) * (largura + 2) + comida.x] = '*';
 
-    // Imprime o mapaBuffer
-    // system("cls");
-    printf("\x1b[2J\x1b[0;0H");
-    for (int i = 0; i < altura + 2; i++)
-    {
-        for (int j = 0; j < largura + 2; j++) {
-            char c = mapaBuffer[i * (largura + 2) + j];
-            if (i == 0 || i == altura + 1 || j == 0 || j == largura + 1)
-                printf("#");
-            else
-                printf("%c", c);
-        }
-        printf("\n");
-    }
-
-    exibirPontuacao(jogador);
-    printf("Pressione (Q) para sair!\n");
+    // Desenha o buffer na tela
+    desenharBuffer(jogador);
 }
 
 
